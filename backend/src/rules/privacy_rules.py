@@ -68,14 +68,59 @@ privacy_dictionary = {
 def identify_privacy_related_sections(nlp, doc):
     privacy_sections = []
     privacy_patterns = [
+        # Your personal data
+        # Your personal information
+        [
+            {"LOWER": "your", "POS": "pron", "OP": "+"},
+            {"POS": "adj", "DEP": "amod", "OP": "*"},
+            {"LOWER": "data", "POS": "noun", "OP": "+"},
+        ],
+        # uber used the information/data we collect ..
+        # The data/information we collect is to ...
+        [
+            {
+                "LOWER": {"IN": ["data", "information"]},
+                "POS": "noun",
+                "DEP": {"IN": ["dobj", "nsubj"]},
+                "POS": "+",
+            },
+            {"POS": "PRON", "DEP": "nsubj", "OP": "*"},
+            {
+                "LEMMA": {"IN": ["collect", "process", "store", "access", "use"]},
+                "OP": "*",
+            },
+        ],
+        # we may collect data about ...
+        # we collect data
+        [
+            {"POS": "PRON", "DEP": "nsubj", "OP": "+"},
+            {"POS": "AUX", "OP": "*"},
+            {
+                "LEMMA": {"IN": ["collect", "process", "store", "access", "use"]},
+                "OP": "+",
+            },
+            {"LOWER": {"IN": ["data", "information"]}, "OP": "+"},
+        ],
+        # share users' data
+        [
+            {"LOWER": "share", "POS": "VERB", "OP": "+"},
+            {"POS": "NOUN", "dep": "poss"},
+            {"LOWER": "data", "OP": "+"},
+        ],
         [
             {"LOWER": {"IN": ["personal", "personally identifiable"]}, "OP": "+"},
             {"LOWER": {"IN": ["data", "information"]}, "OP": "+"},
         ],
         [
-            {"LEMMA": {"IN": ["collect", "process", "store"]}, "OP": "+"},
+            {
+                "LEMMA": {
+                    "IN": ["collect", "process", "store", "access", "use", "share"]
+                },
+                "OP": "+",
+            },
+            {"LOWER": {"IN": ["confidential", "private", "sensitive"]}, "OP": "*"},
             {"LOWER": {"IN": ["data", "information"]}, "OP": "+"},
-        ][{"LOWER": {"IN": ["confidential", "private", "sensitive"]}, "OP": "+"}],
+        ],
         [{"LOWER": {"IN": ["gdpr", "data protection"]}, "OP": "+"}],
         [
             {"LOWER": "share", "OP": "+"},
@@ -87,7 +132,6 @@ def identify_privacy_related_sections(nlp, doc):
             {"LOWER": {"IN": ["service", "services"]}, "OP": "*"},
             {"LOWER": {"IN": ["provider", "providers"]}, "OP": "*"},
         ],
-        [{"LOWER": {"IN": ["gdpr", "data protection"]}, "OP": "+"}],
     ]
 
     matcher = Matcher(nlp.vocab)
