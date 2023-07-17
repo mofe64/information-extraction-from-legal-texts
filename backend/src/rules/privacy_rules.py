@@ -140,6 +140,6 @@ def identify_privacy_related_sections(nlp, doc):
 
     for id, start, end in matches:
         section = doc[start:end].sent
-        privacy_sections.append(section)
+        privacy_sections.append(section.text)
 
     return list(set(privacy_sections))

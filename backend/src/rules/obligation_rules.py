@@ -54,6 +54,6 @@ def identify_user_obligations(nlp, doc):
 
     for id, start, end in matches:
         obligation_sentence = doc[start:end].sent
-        obligation_sentences.append(obligation_sentence)
+        obligation_sentences.append(obligation_sentence.text)
 
     return list(set(obligation_sentences))
