@@ -3,10 +3,10 @@ import spacy
 nlp = spacy.load("en_core_web_sm")
 
 
-# test = [nlp(word.lower())[0] for word in ["collecting", "processed", "stored"]]
-# test2 = [c.lemma_ for c in test]
-# print(test)
-# print(test2)
+test = [nlp(word.lower())[0] for word in ["user's", "person's"]]
+test2 = [c.lemma_ for c in test]
+print(test)
+print(test2)
 
 
 def get_pos(text):
@@ -37,7 +37,7 @@ def get_dep(text):
     return " ".join(pos_arr)
 
 
-z = "Uber may share users’ data if we believe it’s required by applicable law"
+z = "United States Digital Millennium Copyright Act"
 print("pos -> " + get_pos(z))
 print("dep -> " + get_dep(z))
-print(spacy.explain("poss"))
+# print(spacy.explain("case"))

@@ -1,4 +1,4 @@
-from util import clean, clean_lemma, clean_lower
+from util import clean_space, clean_lemma, clean_lower
 import spacy
 import os
 
@@ -15,7 +15,7 @@ def process_file(file_path):
         text = file.read()
 
     doc = nlp(text)
-    base_clean = clean(doc)
+    base_clean = clean_space(doc)
 
     # Return the processed content
     return {"base": base_clean}

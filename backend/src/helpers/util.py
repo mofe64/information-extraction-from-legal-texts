@@ -1,4 +1,4 @@
-def clean(doc):
+def clean_space(doc):
     cleaned_text = []
     for token in doc:
         if not token.is_space:

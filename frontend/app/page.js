@@ -52,7 +52,7 @@ export default function Home() {
           info,
         };
         sessionStorage.setItem("info", JSON.stringify(payload));
-        // router.push("/results");
+        router.push("/results");
       } else {
         throw new Error("Something went wrong please try again");
       }
