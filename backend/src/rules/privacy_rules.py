@@ -11,7 +11,7 @@ Pattern: Verbs related to data collection or processing (e.g., "collect," "proce
 Rationale: Verbs associated with data collection or processing activities often indicate that user data is being handled.
 Identifying these verbs can help identify sections where privacy-related activities are described.
 
-Rule 3:
+Rule 3: Not applicable ...
 Pattern: Adjectives describing sensitive information (e.g., "confidential," "private," "sensitive")
 Rationale: Adjectives that qualify information as sensitive or confidential may indicate content related to privacy.
 These descriptors suggest that the information being discussed requires special protection.
@@ -27,42 +27,10 @@ Rationale: Phrases that refer to sharing data with external entities or involvin
 Identifying such phrases can help locate sections discussing data sharing practices.
 
 Rule 6:
-Pattern: Terms related to consent or user rights (e.g., "opt-in," "consent," "access rights," "data subject rights")
-Rationale: Terms associated with consent or user rights highlight sections where privacy-related permissions or user protections are addressed. 
-Recognizing these terms can help identify content discussing privacy choices or user control.
-
-Rule 7:
 Pattern: Phrases indicating security measures (e.g., "encryption," "firewalls," "access controls")
 Rationale: Mentions of security measures often signify a focus on protecting user data. 
 Identifying these phrases can help identify sections discussing data security practices and privacy safeguards.
 """
-
-privacy_dictionary = {
-    "personal information": [
-        "PII",
-        "personally identifiable information",
-        "sensitive data",
-    ],
-    "data protection": ["information security", "privacy protection"],
-    "consent": ["approval", "permission", "authorization"],
-    "user privacy": ["individual privacy", "customer privacy"],
-    "data breach": ["security incident", "information leak"],
-    "anonymized data": ["de-identified data", "pseudonymized data"],
-    "cookie": ["web cookie", "tracking cookie"],
-    "opt-out": ["unsubscribe", "do not track"],
-    "privacy policy": ["data protection policy", "information usage policy"],
-    "GDPR": ["General Data Protection Regulation"],
-    "data controller": ["data custodian", "data owner"],
-    "data processor": ["service provider", "data handler"],
-    "data subject": ["individual", "customer"],
-    "data retention": ["data storage", "information preservation"],
-    "third party": ["external party", "outside organization"],
-    "data minimization": ["minimum necessary principle", "limited data collection"],
-    "encryption": ["data encryption", "data security"],
-    "tracking": ["monitoring", "surveillance"],
-    "data erasure": ["data deletion", "right to be forgotten"],
-    "data transfer": ["data sharing", "data transmission"],
-}
 
 
 def identify_privacy_related_sections(nlp, doc):
@@ -72,8 +40,17 @@ def identify_privacy_related_sections(nlp, doc):
         # Your personal information
         [
             {"LOWER": "your", "POS": "pron", "OP": "+"},
-            {"POS": "adj", "DEP": "amod", "OP": "*"},
-            {"LOWER": "data", "POS": "noun", "OP": "+"},
+            {
+                "POS": "ADJ",
+                "DEP": "amod",
+                "OP": "*",
+            },
+            {"LOWER": {"IN": ["data", "information"]}, "POS": "noun", "OP": "+"},
+        ],
+        # personal data on its own
+        [
+            {"LOWER": {"IN": ["personal", "personally identifiable"]}, "OP": "+"},
+            {"LOWER": {"IN": ["data", "information"]}, "OP": "+"},
         ],
         # uber used the information/data we collect ..
         # The data/information we collect is to ...
@@ -90,48 +67,50 @@ def identify_privacy_related_sections(nlp, doc):
                 "OP": "*",
             },
         ],
-        # we may collect data about ...
-        # we collect data
+        # collect/process/store/access/use adj data
         [
-            {"POS": "PRON", "DEP": "nsubj", "OP": "+"},
-            {"POS": "AUX", "OP": "*"},
             {
                 "LEMMA": {"IN": ["collect", "process", "store", "access", "use"]},
                 "OP": "+",
             },
+            {"POS": "ADJ", "DEP": "amod", "OP": "*"},
             {"LOWER": {"IN": ["data", "information"]}, "OP": "+"},
         ],
-        # share users' data
+        # share user data
         [
             {"LOWER": "share", "POS": "VERB", "OP": "+"},
-            {"POS": "NOUN", "dep": "poss"},
+            {"LEMMA": "user", "OP": "+"},
             {"LOWER": "data", "OP": "+"},
         ],
-        [
-            {"LOWER": {"IN": ["personal", "personally identifiable"]}, "OP": "+"},
-            {"LOWER": {"IN": ["data", "information"]}, "OP": "+"},
-        ],
-        [
-            {
-                "LEMMA": {
-                    "IN": ["collect", "process", "store", "access", "use", "share"]
-                },
-                "OP": "+",
-            },
-            {"LOWER": {"IN": ["confidential", "private", "sensitive"]}, "OP": "*"},
-            {"LOWER": {"IN": ["data", "information"]}, "OP": "+"},
-        ],
-        [{"LOWER": {"IN": ["gdpr", "data protection"]}, "OP": "+"}],
+        # share data with
         [
             {"LOWER": "share", "OP": "+"},
             {"LOWER": "data", "OP": "+"},
             {"LOWER": "with", "OP": "+"},
-            {"LOWER": "third", "OP": "*"},
-            {"ORTH": "-", "OP": "*"},
-            {"LOWER": {"IN": ["party", "parties"]}, "OP": "*"},
-            {"LOWER": {"IN": ["service", "services"]}, "OP": "*"},
-            {"LOWER": {"IN": ["provider", "providers"]}, "OP": "*"},
         ],
+        # gdpr and other regs
+        [
+            {"LOWER": {"IN": ["gdpr"]}, "OP": "+"},
+        ],
+        [
+            {"LOWER": {"IN": ["general"]}, "OP": "+"},
+            {"LOWER": {"IN": ["data"]}, "OP": "+"},
+            {"LOWER": {"IN": ["protection"]}, "OP": "+"},
+            {"LOWER": {"IN": ["regulation"]}, "OP": "+"},
+        ],
+        [
+            {"LOWER": {"IN": ["data"]}, "OP": "+"},
+            {"LOWER": {"IN": ["protection"]}, "OP": "+"},
+            {"LOWER": {"IN": ["act"]}, "OP": "+"},
+        ],
+        [
+            {"LOWER": {"IN": ["privacy"]}, "OP": "+"},
+            {"LOWER": {"IN": ["and"]}, "OP": "+"},
+            {"LOWER": {"IN": ["communications"]}, "OP": "+"},
+            {"LOWER": {"IN": ["regulation"]}, "OP": "+"},
+        ],
+        # encryption and other like terms
+        [{"LEMMA": {"IN": ["encrypt", "encryption", "firewall"]}}],
     ]
 
     matcher = Matcher(nlp.vocab)

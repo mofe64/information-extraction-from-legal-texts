@@ -3,7 +3,7 @@ import spacy
 nlp = spacy.load("en_core_web_sm")
 
 
-test = [nlp(word.lower())[0] for word in ["user's", "person's"]]
+test = [nlp(word.lower())[0] for word in ["encrypt", "person's"]]
 test2 = [c.lemma_ for c in test]
 print(test)
 print(test2)
@@ -37,7 +37,7 @@ def get_dep(text):
     return " ".join(pos_arr)
 
 
-z = "United States Digital Millennium Copyright Act"
+z = "c"
 print("pos -> " + get_pos(z))
 print("dep -> " + get_dep(z))
-# print(spacy.explain("case"))
+print(spacy.explain("dobj"))

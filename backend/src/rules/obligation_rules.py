@@ -19,32 +19,56 @@ def identify_user_obligations(nlp, doc):
 
     # Define patterns for obligation matching
     obligation_patterns = [
-        # v1 patterns
-        [{"LOWER": "you", "DEP": "nsubj", "OP": "+"}, {"POS": "VERB", "OP": "+"}],
+        # 1
         [
             {"LOWER": "you", "DEP": "nsubj", "OP": "+"},
-            {"POS": "VERB", "OP": "+"},
-            {"POS": "ADV", "OP": "+"},
+            {"LOWER": {"IN": obligation_verbs}, "DEP": "aux", "OP": "+"},
+        ],
+        # 2
+        [
+            {"POS": {"IN": ["NOUN", "PROPN"]}, "LEMMA": "user", "OP": "+"},
+            {"LOWER": {"IN": obligation_verbs}, "DEP": "aux", "OP": "+"},
+        ],
+        # 3
+        [
+            {"LOWER": "you", "DEP": "nsubj", "OP": "+"},
+            {"LOWER": {"IN": ["agree", "consent", "confirm"]}, "OP": "+"},
         ],
         [
             {"LOWER": "you", "DEP": "nsubj", "OP": "+"},
-            {"POS": "ADV", "OP": "+"},
+            {"LOWER": "are", "OP": "+"},
+            {"LOWER": "liable", "OP": "+"},
+        ],
+        # 4
+        [
+            {"POS": {"IN": ["NOUN", "PROPN"]}, "LEMMA": "user", "OP": "+"},
+            {"LEMMA": {"IN": ["agree", "consent", "confirm"]}, "OP": "+"},
+        ],
+        [
+            {"POS": {"IN": ["NOUN", "PROPN"]}, "LEMMA": "user", "OP": "+"},
+            {"POS": "AUX", "OP": "*"},
+            {"LOWER": "liable", "OP": "+"},
+        ],
+        # 5
+        [
+            {"LOWER": "you", "DEP": "nsubj", "OP": "+"},
+            {"LEMMA": "do", "POS": "AUX", "OP": "+"},
+            {"LEMMA": "not", "DEP": "neg", "OP": "+"},
             {
+                "LEMMA": {"IN": ["agree", "consent", "confirm"]},
                 "POS": "VERB",
                 "OP": "+",
-            },  # limit to obligation verbs (not possible since obligations are not always couches using obligation verbs)
+            },
         ],
-        # v2 patterns - derived from uber look through
         [
-            {"LOWER": "you", "DEP": "nsubj", "OP": "+"},
-            {"LOWER": {"IN": obligation_verbs}, "DEP": "aux", "OP": "+"},
-            {"POS": "VERB", "OP": "+"},
-        ],
-        # Noun phrase patterns eg "Users are responsible for maintaining the security of their login credentials."
-        [
-            {"POS": {"IN": ["NOUN", "PROPN"]}, "OP": "+"},
-            {"POS": {"IN": ["ADJ", "PART"]}, "OP": "*"},
-            {"LOWER": {"IN": obligation_verbs}, "DEP": "aux", "OP": "+"},
+            {"POS": {"IN": ["NOUN", "PROPN"]}, "LEMMA": "user", "OP": "+"},
+            {"LEMMA": "do", "POS": "AUX", "OP": "+"},
+            {"LEMMA": "not", "DEP": "neg", "OP": "+"},
+            {
+                "LEMMA": {"IN": ["agree", "consent", "confirm"]},
+                "POS": "VERB",
+                "OP": "+",
+            },
         ],
     ]
 
