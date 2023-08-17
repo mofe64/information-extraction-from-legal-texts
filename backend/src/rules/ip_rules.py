@@ -17,6 +17,16 @@ def identify_ip_related_sections(nlp, doc):
                 "OP": "+",
             },
         ],
+        # copy right infringment
+        [
+            {"LOWER": "copyright", "OP": "+"},
+            {"LOWER": "infringement", "OP": "+"},
+        ],
+        # copyright/trademark violations/infringement
+        [
+            {"LOWER": {"IN": ["copyright", "trademark"]}, "OP": "+"},
+            {"LEMMA": {"IN": ["violations", "infringment"]}, "OP": "+"},
+        ],
         # copyrighted content/ works
         [
             {
@@ -28,11 +38,6 @@ def identify_ip_related_sections(nlp, doc):
                 "POS": "NOUN",
                 "OP": "+",
             },
-        ],
-        # copy right infringment
-        [
-            {"LOWER": "copyright", "OP": "+"},
-            {"LOWER": "infringement", "OP": "+"},
         ],
         # fair use/dealing
         [
@@ -49,11 +54,7 @@ def identify_ip_related_sections(nlp, doc):
             {"POS": "PART", "DEP": "case", "OP": "*"},
             {"LOWER": {"IN": ["copyright", "content", "trademark"]}, "OP": "+"},
         ],
-        # copyright/trademark violations/infringement
-        [
-            {"LOWER": {"IN": ["copyright", "trademark"]}, "OP": "+"},
-            {"LEMMA": {"IN": ["violations", "infringment"]}, "OP": "+"},
-        ],
+        #
         #  United States Digital Millennium Copyright Act
         [
             {"LOWER": "united", "OP": "+"},
@@ -69,7 +70,7 @@ def identify_ip_related_sections(nlp, doc):
             {"LOWER": "copyright", "OP": "+"},
             {"LOWER": "directive", "OP": "+"},
         ],
-        # Europeam union copyright directive
+        # European union copyright directive
         [
             {"LOWER": "european", "OP": "+"},
             {"LOWER": "union", "OP": "+"},
