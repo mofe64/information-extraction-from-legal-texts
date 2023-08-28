@@ -37,7 +37,7 @@ def get_dep(text):
     return " ".join(pos_arr)
 
 
-z = "c"
+z = "The licence to your content that you grant to us"
 print("pos -> " + get_pos(z))
 print("dep -> " + get_dep(z))
 print(spacy.explain("dobj"))
