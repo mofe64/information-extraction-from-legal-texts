@@ -82,6 +82,55 @@ def identify_ip_related_sections(nlp, doc):
             {"LOWER": "trademark", "OP": "+"},
             {"LOWER": "rights", "OP": "+"},
         ],
+        # intellectual property rights
+        [
+            {"LOWER": "intellectual", "OP": "+"},
+            {"LOWER": "property", "OP": "+"},
+            {"LOWER": "rights", "OP": "+"},
+        ],
+        # license to
+        [
+            {
+                "LEMMA": {
+                    "IN": [
+                        "licence",
+                        "license",
+                    ],
+                },
+                "OP": "+",
+            },
+            {
+                "DEP": "prep",
+                "OP": "+",
+            },
+        ],
+        # different types of license
+        [
+            {
+                "LOWER": {
+                    "IN": [
+                        "non-exclusive",
+                        "exclusive",
+                        "royalty-free",
+                        "transferable",
+                        "non-transferable",
+                        "sub-licensable",
+                        "sub-licencable",
+                        "worldwide",
+                    ]
+                },
+                "OP": "+",
+            },
+            {
+                "LOWER": {
+                    "IN": [
+                        "licence",
+                        "license",
+                    ],
+                },
+                "OP": "+",
+            },
+        ],
     ]
     matcher = Matcher(nlp.vocab)
     matcher.add("IP_RULES", ip_patterns)
