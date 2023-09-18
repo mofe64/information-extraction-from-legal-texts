@@ -49,7 +49,13 @@ def identify_privacy_related_sections(nlp, doc):
         ],
         # personal data on its own
         [
-            {"LOWER": {"IN": ["personal", "personally identifiable"]}, "OP": "+"},
+            {
+                "LOWER": {
+                    "IN": ["personal", "personally", "non-personally", "profile"]
+                },
+                "OP": "+",
+            },
+            {"LOWER": "identifiable", "OP": "*"},
             {"LOWER": {"IN": ["data", "information"]}, "OP": "+"},
         ],
         # uber used the information/data we collect ..
@@ -57,9 +63,9 @@ def identify_privacy_related_sections(nlp, doc):
         [
             {
                 "LOWER": {"IN": ["data", "information"]},
-                "POS": "noun",
+                "POS": "NOUN",
                 "DEP": {"IN": ["dobj", "nsubj"]},
-                "POS": "+",
+                "OP": "+",
             },
             {"POS": "PRON", "DEP": "nsubj", "OP": "*"},
             {
@@ -70,7 +76,9 @@ def identify_privacy_related_sections(nlp, doc):
         # collect/process/store/access/use adj data
         [
             {
-                "LEMMA": {"IN": ["collect", "process", "store", "access", "use"]},
+                "LEMMA": {
+                    "IN": ["collect", "process", "store", "access", "use", "disclose"]
+                },
                 "OP": "+",
             },
             {"POS": "ADJ", "DEP": "amod", "OP": "*"},

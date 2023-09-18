@@ -77,10 +77,10 @@ def identify_ip_related_sections(nlp, doc):
             {"LOWER": "copyright", "OP": "+"},
             {"LOWER": "directive", "OP": "+"},
         ],
-        # trademark rights
+        # trademark/trademark rights
         [
             {"LOWER": "trademark", "OP": "+"},
-            {"LOWER": "rights", "OP": "+"},
+            {"LOWER": "rights", "OP": "*"},
         ],
         # intellectual property rights
         [
@@ -106,30 +106,36 @@ def identify_ip_related_sections(nlp, doc):
         ],
         # different types of license
         [
+            {"LOWER": {"IN": ["non", "royalty", "sub"]}, "OP": "+"},
+            {"ORTH": "-", "OP": "*"},
             {
                 "LOWER": {
                     "IN": [
-                        "non-exclusive",
                         "exclusive",
-                        "royalty-free",
                         "transferable",
-                        "non-transferable",
-                        "sub-licensable",
-                        "sub-licencable",
+                        "free",
+                        "licensable",
+                        "licencable",
+                    ]
+                },
+                "OP": "+",
+            },
+            {"LOWER": {"IN": ["licence", "license", "right"]}, "OP": "+"},
+        ],
+        [
+            {
+                "LOWER": {
+                    "IN": [
+                        "exclusive",
+                        "transferable",
+                        "sublicensable",
+                        "sublicencable",
                         "worldwide",
                     ]
                 },
                 "OP": "+",
             },
-            {
-                "LOWER": {
-                    "IN": [
-                        "licence",
-                        "license",
-                    ],
-                },
-                "OP": "+",
-            },
+            {"LOWER": {"IN": ["licence", "license", "right"]}, "OP": "+"},
         ],
     ]
     matcher = Matcher(nlp.vocab)

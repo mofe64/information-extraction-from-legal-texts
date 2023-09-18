@@ -3,7 +3,15 @@ import spacy
 nlp = spacy.load("en_core_web_sm")
 
 
-test = [nlp(word.lower())[0] for word in ["encrypt", "person's"]]
+test = [
+    nlp(word.lower())[0]
+    for word in [
+        "royalty-free",
+        "sublicencable",
+        "non-transferable",
+        "non-exclusive",
+    ]
+]
 test2 = [c.lemma_ for c in test]
 print(test)
 print(test2)
@@ -37,7 +45,7 @@ def get_dep(text):
     return " ".join(pos_arr)
 
 
-z = "The licence to your content that you grant to us"
+z = "We retain the data we collect for different periods of time depending on what it is, how we use it, and how you configure your settings"
 print("pos -> " + get_pos(z))
 print("dep -> " + get_dep(z))
 print(spacy.explain("dobj"))

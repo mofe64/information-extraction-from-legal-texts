@@ -37,7 +37,7 @@ def identify_user_obligations(nlp, doc):
         [
             {"LOWER": "you", "DEP": "nsubj", "OP": "+"},
             {"LOWER": "are", "OP": "+"},
-            {"LOWER": "liable", "OP": "+"},
+            {"LOWER": "liable", "OP": "+"},  # responsible
         ],
         # 4
         [
