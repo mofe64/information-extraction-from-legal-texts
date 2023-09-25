@@ -3,6 +3,7 @@ import { Fragment, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { useRouter } from "next/navigation";
+import { ColorRing } from "react-loader-spinner";
 
 const categories = [
   {
@@ -29,9 +30,11 @@ function classNames(...classes) {
 export default function Home() {
   const [selected, setSelected] = useState(categories[0]);
   const [rawText, setRawText] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const submit = async (rawText, category) => {
     try {
+      setLoading(true);
       const res = await fetch("http://localhost:5000", {
         method: "POST",
         headers: {
@@ -52,8 +55,10 @@ export default function Home() {
           info,
         };
         sessionStorage.setItem("info", JSON.stringify(payload));
+        setLoading(false);
         router.push("/results");
       } else {
+        setLoading(false);
         throw new Error("Something went wrong please try again");
       }
     } catch (err) {
@@ -168,14 +173,27 @@ export default function Home() {
       </div>
 
       <div className="mt-6 flex items-center justify-end gap-x-6">
-        <button
-          onClick={() => {
-            submit(rawText, selected.value);
-          }}
-          className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        >
-          Extract
-        </button>
+        {loading && (
+          <ColorRing
+            visible={true}
+            height="80"
+            width="80"
+            ariaLabel="blocks-loading"
+            wrapperStyle={{}}
+            wrapperClass="blocks-wrapper"
+            colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
+          />
+        )}
+        {!loading && (
+          <button
+            onClick={() => {
+              submit(rawText, selected.value);
+            }}
+            className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
+            Extract
+          </button>
+        )}
       </div>
     </main>
   );
